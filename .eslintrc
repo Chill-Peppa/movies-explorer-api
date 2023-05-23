@@ -11,6 +11,7 @@
     ],
     "object-curly-newline": ["error", {
       "ObjectPattern": "never"
-  }]
+  }],
+  "no-console": "off"
   }
 }
