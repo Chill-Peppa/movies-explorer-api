@@ -25,7 +25,7 @@ const createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     nameRU,
     nameEN,
     thumbnail,
@@ -38,17 +38,13 @@ const createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     nameRU,
     nameEN,
     thumbnail,
     movieId,
     owner: _id })
-    .then((newMovie) => {
-      Movie.findOne(newMovie)
-        .populate(['owner'])
-        .then((movie) => res.status(201).send(movie));
-    })
+    .then((newMovie) => res.status(201).send(newMovie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(
