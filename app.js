@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const { PORT = 3000 } = process.env;
+const { errors } = require('celebrate');
 
 const app = express();
 const router = require('./routes');
@@ -25,6 +26,7 @@ app.use(router);
 
 app.use(pageNotFound); // если введен несуществующий адрес
 
+app.use(errors()); // from celebrate
 app.use(centralErrorHandler); // централизованный обработчик ошибок
 
 app.listen(PORT, () => {
