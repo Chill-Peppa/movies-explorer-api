@@ -4,7 +4,7 @@ const { login, createUser } = require('../controllers/users');
 
 const { loginValidation, registrationValidation } = require('../utils/validation');
 
+signRouter.post('/signup', createUser);
 signRouter.post('/signin', celebrate(loginValidation), login);
-signRouter.post('/signup', celebrate(registrationValidation), createUser);
 
 module.exports = signRouter;
