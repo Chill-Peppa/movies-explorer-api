@@ -17,9 +17,8 @@ const getSavedMovies = (req, res, next) => {
 
 const createMovie = (req, res, next) => {
   const { _id } = req.user;
-  // eslint-disable-next-line object-curly-newline
-  const {
-    country,
+
+  const { country,
     director,
     duration,
     year,
@@ -30,9 +29,8 @@ const createMovie = (req, res, next) => {
     nameEN,
     thumbnail,
     movieId } = req.body;
-  // eslint-disable-next-line object-curly-newline
-  Movie.create({
-    country,
+
+  Movie.create({ country,
     director,
     duration,
     year,

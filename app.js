@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const { PORT = 3000 } = process.env;
+
 const { errors } = require('celebrate');
 
 const app = express();
@@ -10,24 +11,28 @@ const signRouter = require('./routes/sign');
 const { auth } = require('./middlewares/auth');
 const { pageNotFound } = require('./middlewares/pageNotFound');
 const { centralErrorHandler } = require('./middlewares/centralErrorHandler');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
 
-// вместо бади парсера
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(requestLogger);
 
 // роуты, НЕ требующие авторизации
 app.use(signRouter);
 
 app.use(auth);
+
 // роуты, требующие авторизацию
 app.use(router);
+app.use(pageNotFound);
 
-app.use(pageNotFound); // если введен несуществующий адрес
+app.use(errorLogger);
 
-app.use(errors()); // from celebrate
-app.use(centralErrorHandler); // централизованный обработчик ошибок
+app.use(errors());
+app.use(centralErrorHandler);
 
 app.listen(PORT, () => {
   console.log(`Приложение запущено на ${PORT} порту`);
