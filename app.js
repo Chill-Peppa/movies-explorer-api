@@ -11,6 +11,7 @@ const signRouter = require('./routes/sign');
 const { auth } = require('./middlewares/auth');
 const { pageNotFound } = require('./middlewares/pageNotFound');
 const { centralErrorHandler } = require('./middlewares/centralErrorHandler');
+const cors = require('./middlewares/cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb');
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(requestLogger);
+app.use(cors);
 
 // роуты, НЕ требующие авторизации
 app.use(signRouter);
