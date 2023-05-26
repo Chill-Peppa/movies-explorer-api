@@ -8,6 +8,13 @@ const NotFoundError = require('../errors/notfound-err');
 const ConflictError = require('../errors/conflict-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
 
+const { mailRegisteredMassage,
+  wrongRequestMassage,
+  wrongSignDataMassage,
+  notFoundUserMassage,
+  notFoundIdMassage,
+  wrongPatchDataMassage } = require('../utils/errorsText');
+
 const createUser = (req, res, next) => {
   const { email, name } = req.body;
 
@@ -23,14 +30,10 @@ const createUser = (req, res, next) => {
     .catch((err) => {
       if (err.code === 11000) {
         next(
-          new ConflictError('Пользователь с таким email уже зарегистрирован'),
+          new ConflictError(mailRegisteredMassage),
         );
       } else if (err.name === 'ValidationError') {
-        next(
-          new BadRequestError(
-            'Переданы некорректные данные при создании пользователя.',
-          ),
-        );
+        next(new BadRequestError(wrongRequestMassage));
       } else {
         next(err);
       }
@@ -44,12 +47,12 @@ const login = (req, res, next) => {
     .select('+password')
     .then((user) => {
       if (!user) {
-        throw new UnauthorizedError('Неправильная почта или пароль.');
+        throw new UnauthorizedError(wrongSignDataMassage);
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
           // хеши не совпали — отклоняем промис
-          throw new UnauthorizedError('Неправильная почта или пароль.');
+          throw new UnauthorizedError(wrongSignDataMassage);
         }
 
         const token = jwt.sign(
@@ -71,7 +74,7 @@ const getInfoMe = (req, res, next) => {
   User.findById({ _id: req.user._id })
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь не найден.');
+        throw new NotFoundError(notFoundUserMassage);
       } else {
         res.status(200).send(user);
       }
@@ -95,18 +98,18 @@ const updateProfile = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь c указанным id не найден.');
+        throw new NotFoundError(notFoundIdMassage);
       } else {
         res.status(200).send(user);
       }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.code === 11000) {
         next(
-          new BadRequestError(
-            'Переданы некорректные данные при обновлении профиля.',
-          ),
+          new ConflictError(mailRegisteredMassage),
         );
+      } else if (err.name === 'ValidationError') {
+        next(new BadRequestError(wrongPatchDataMassage));
         return;
       }
       next(err);

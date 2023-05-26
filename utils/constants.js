@@ -11,7 +11,10 @@ const allowedCors = [
   'localhost:3001',
 ];
 
+const URL_DB_DEV = 'mongodb://127.0.0.1:27017/bitfilmsdb';
+
 module.exports = {
   urlRegExp,
   allowedCors,
+  URL_DB_DEV,
 };

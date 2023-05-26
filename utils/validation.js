@@ -12,7 +12,7 @@ const registrationValidation = {
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
+    name: Joi.string().min(2).max(30).required(),
   }),
 };
 
@@ -34,7 +34,7 @@ const createMovieValidation = {
 
 const deleteMovieValidation = {
   params: Joi.object().keys({
-    cardId: Joi.string().hex().length(24).required(),
+    _id: Joi.string().hex().length(24).required(),
   }),
 };
 
